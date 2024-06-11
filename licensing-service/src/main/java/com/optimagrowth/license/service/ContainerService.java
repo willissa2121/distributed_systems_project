@@ -35,6 +35,7 @@ public class ContainerService {
 
     public Container createContainer(Container container){
         container.setContainerId(UUID.randomUUID().toString());
+        System.out.println(container);
 //        license.setComment(config.getProperty());
         c.save(container);
 
@@ -49,8 +50,6 @@ public class ContainerService {
 
     public String deleteContainer(String containerId){
         String responseMessage = null;
-        License license = new License();
-        license.setLicenseId(containerId);
         c.deleteByContainerId(containerId);
         responseMessage = String.format(messages.getMessage("license.delete.message", null, null),containerId);
         return responseMessage;

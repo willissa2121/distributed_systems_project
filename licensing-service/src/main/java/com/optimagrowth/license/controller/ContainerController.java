@@ -47,6 +47,7 @@ public class ContainerController {
 
     @PostMapping
     public ResponseEntity<Container> createContainer(@RequestBody Container request) {
+        System.out.println(request);
         return ResponseEntity.ok(containerService.createContainer(request));
     }
 
