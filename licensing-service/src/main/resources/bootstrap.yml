@@ -1,0 +1,8 @@
+spring:
+    application:
+     name: licensing-service 
+    profiles:
+      active: test
+    cloud:
+        config: 
+            uri: http://configserver:8073
