@@ -34,3 +34,17 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.licenses
     OWNER to postgres;
+
+CREATE TABLE IF NOT EXISTS public.container
+(
+    container_id text COLLATE pg_catalog."default" NOT NULL,
+    container_type text COLLATE pg_catalog."default" NOT NULL,
+    created_at text COLLATE pg_catalog."default" NOT NULL,
+    updated_at text COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT container_pkey PRIMARY KEY (container_id)
+)
+
+TABLESPACE pg_default;
+
+ALTER TABLE public.container
+    OWNER to postgres;
