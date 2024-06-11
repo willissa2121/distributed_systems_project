@@ -4,7 +4,7 @@
 
   <groupId>com.optimagrowth</groupId>
   <version>0.0.1-SNAPSHOT</version>
-  <artifactId>ostock-parent-pom</artifactId>
+  <artifactId>distributed_systems_project</artifactId>
   <packaging>pom</packaging>
 
 
