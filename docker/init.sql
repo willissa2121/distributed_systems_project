@@ -1,50 +1,15 @@
-CREATE TABLE IF NOT EXISTS public.organizations
-(
-    organization_id text COLLATE pg_catalog."default" NOT NULL,
-    name text COLLATE pg_catalog."default",
-    contact_name text COLLATE pg_catalog."default",
-    contact_email text COLLATE pg_catalog."default",
-    contact_phone text COLLATE pg_catalog."default",
-    CONSTRAINT organizations_pkey PRIMARY KEY (organization_id)
-)
+-- Schema for DockerImage
+CREATE TABLE IF NOT EXISTS docker_image (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    tag VARCHAR(255) NOT NULL,
+    repository VARCHAR(255) NOT NULL
+);
 
-TABLESPACE pg_default;
-
-ALTER TABLE public.organizations
-    OWNER to postgres;
-
-
-CREATE TABLE IF NOT EXISTS public.licenses
-(
-    license_id text COLLATE pg_catalog."default" NOT NULL,
-    organization_id text COLLATE pg_catalog."default" NOT NULL,
-    description text COLLATE pg_catalog."default",
-    product_name text COLLATE pg_catalog."default" NOT NULL,
-    license_type text COLLATE pg_catalog."default" NOT NULL,
-    comment text COLLATE pg_catalog."default",
-    CONSTRAINT licenses_pkey PRIMARY KEY (license_id),
-    CONSTRAINT licenses_organization_id_fkey FOREIGN KEY (organization_id)
-        REFERENCES public.organizations (organization_id) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
-        NOT VALID
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE public.licenses
-    OWNER to postgres;
-
-CREATE TABLE IF NOT EXISTS public.container
-(
-    container_id text COLLATE pg_catalog."default" NOT NULL,
-    container_type text COLLATE pg_catalog."default" NOT NULL,
-    created_at text COLLATE pg_catalog."default" NOT NULL,
-    updated_at text COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT container_pkey PRIMARY KEY (container_id)
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE public.container
-    OWNER to postgres;
+-- Schema for ImageMetadata
+CREATE TABLE IF NOT EXISTS image_metadata (
+    id BIGSERIAL PRIMARY KEY,
+    description VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    created_date DATE NOT NULL
+);
