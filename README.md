@@ -44,3 +44,4 @@ $ psql -U dockeruser dockerdb
 ## Troubleshooting
 For some reason, I am requried to run teh docker compose twice for everything to be runnning
 Exposed daemon on tcp://localhost:2375 in settings
+Still working to get docker start command to run
