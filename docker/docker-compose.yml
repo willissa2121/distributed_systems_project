@@ -1,53 +1,65 @@
-version: '2.1'
+version: '3'
 services:
-  database:
+  postgres:
     image: postgres:latest
-    ports:
-      - "5432:5432"
     environment:
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "postgres"
-      POSTGRES_DB:       "ostock_test"
+      POSTGRES_DB: dockerdb
+      POSTGRES_USER: dockeruser
+      POSTGRES_PASSWORD: password
     volumes:
         - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
         - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
-    networks:
-      backend:
-        aliases:
-          - "database"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-  configserver:
-    image: ostock/configserver:0.0.1-SNAPSHOT
     ports:
-       - "8073:8073"
-    environment:
-      ENCRYPT_KEY: "fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo"
+      - "5432:5432"
     networks:
-      backend:
-        aliases:
-          - "configserver"
-  licensingservice:
-    image: ostock/licensing-service:0.0.2-SNAPSHOT
-    environment:
-      PROFILE: "test"
-      CONFIGSERVER_URI: "http://configserver:8073"
-      CONFIGSERVER_PORT:   "8073"
-      DATABASESERVER_PORT: "5432"
-      ENCRYPT_KEY:       "IMSYMMETRIC"
-    depends_on:
-      database:
-        condition: service_healthy
-      configserver:
-        condition: service_started
+      - spring-boot-network
+
+  image-service:
+    image: image-service:latest
+    build:
+      context: ./image-service
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
+      SPRING_DATASOURCE_USERNAME: dockeruser
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8089"
+      ENCRYPT_KEY: "IMSYMMETRIC"
     networks:
-      - backend
+      - spring-boot-network
+    depends_on:
+      - postgres
+      - configserver  # Ensure image-service depends on configserver
+
+  configserver:
+    image: configserver:latest
+    ports:
+      - "8089:8089"
+    environment:
+      ENCRYPT_KEY: "fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo"
+      SERVER_PORT: "8089"
+    networks:
+      - spring-boot-network
+
+  metadata-service:
+    image: metadata-service:latest
+    build:
+      context: ./metadata-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
+      SPRING_DATASOURCE_USERNAME: dockeruser
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - spring-boot-network
+    depends_on:
+      - postgres
 
 networks:
-  backend:
+  spring-boot-network:
     driver: bridge

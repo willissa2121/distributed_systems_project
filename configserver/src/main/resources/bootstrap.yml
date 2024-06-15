@@ -3,18 +3,15 @@ spring:
     name: config-server
   profiles:
     active:
-    - git
+    - native
   cloud:
     config:
       server:
-#        native:
-#          search-locations: classpath:/config
-        git:
-          uri: https://github.com/willissa2121/config
-          searchPaths: licensingservice
+        native:
+          search-locations: classpath:/config
     
 server:
-  port: 8073
+  port: 8089
   
 encrypt:
   key: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo 
