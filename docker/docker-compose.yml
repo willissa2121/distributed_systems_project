@@ -14,25 +14,17 @@ services:
     networks:
       - spring-boot-network
 
-  image-service:
-    image: image-service:latest
+  gatewayapi:
+    image: gatewayapi:latest
     build:
-      context: ./image-service
+      context: ./gateway-server
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
-      SPRING_DATASOURCE_USERNAME: dockeruser
-      SPRING_DATASOURCE_PASSWORD: password
-      SPRING_PROFILES_ACTIVE: "dev"
-      CONFIGSERVER_URI: "http://configserver:8089"
-      ENCRYPT_KEY: "IMSYMMETRIC"
     networks:
       - spring-boot-network
     depends_on:
-      - postgres
-      - configserver  # Ensure image-service depends on configserver
+      - eurekaserver
 
   configserver:
     image: configserver:latest
@@ -44,21 +36,147 @@ services:
     networks:
       - spring-boot-network
 
-  metadata-service:
-    image: metadata-service:latest
+  user-services:
+    image: user-services:latest
     build:
-      context: ./metadata-service
+      context: ./user-services
       dockerfile: Dockerfile
     ports:
-      - "8081:8080"
+      - "8082:8080"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
       SPRING_DATASOURCE_USERNAME: dockeruser
       SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8089"
     networks:
       - spring-boot-network
     depends_on:
       - postgres
+      - configserver
+
+  payment-service:
+    image: payment-service:latest
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
+      SPRING_DATASOURCE_USERNAME: dockeruser
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8089"
+    networks:
+      - spring-boot-network
+    depends_on:
+      - postgres
+      - configserver
+
+  transaction-service:
+    image: transaction-service:latest
+    build:
+      context: ./transaction-service
+      dockerfile: Dockerfile
+    ports:
+      - "8084:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
+      SPRING_DATASOURCE_USERNAME: dockeruser
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8089"
+    networks:
+      - spring-boot-network
+    depends_on:
+      - postgres
+      - configserver
+
+  image-service:
+    image: image-service:latest
+    build:
+      context: ./image-service
+      dockerfile: Dockerfile
+    ports:
+      - "8085:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
+      SPRING_DATASOURCE_USERNAME: dockeruser
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8089"
+    networks:
+      - spring-boot-network
+    depends_on:
+      - postgres
+      - configserver
+  
+  container-service:
+    image: container-service:latest
+    build:
+      context: ./container-service
+      dockerfile: Dockerfile
+    ports:
+      - "8086:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
+      SPRING_DATASOURCE_USERNAME: dockeruser
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8089"
+    networks:
+      - spring-boot-network
+    depends_on:
+      - postgres
+      - configserver
+
+  volume-service:
+    image: volume-service:latest
+    build:
+      context: ./volume-service
+      dockerfile: Dockerfile
+    ports:
+      - "8087:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/dockerdb
+      SPRING_DATASOURCE_USERNAME: dockeruser
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: "dev"
+      CONFIGSERVER_URI: "http://configserver:8089"
+    networks:
+      - spring-boot-network
+    depends_on:
+      - postgres
+      - configserver
+
+  eurekaserver:
+    image: eurekaserver:latest
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    ports:
+      - "8070:8070"
+    networks:
+      - spring-boot-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:15.0.2
+    environment:
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: dockerdb
+      DB_USER: dockeruser
+      DB_PASSWORD: password
+    ports:
+      - "8081:8080"
+    networks:
+      - spring-boot-network
+    depends_on:
+      - postgres
+
 
 networks:
   spring-boot-network:

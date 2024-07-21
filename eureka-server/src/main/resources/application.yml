@@ -1,0 +1,21 @@
+server:
+  port: 8761
+
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/dockerdb
+    username: dockeruser
+    password: password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+  server:
+    enable-self-preservation: false
