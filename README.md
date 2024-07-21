@@ -13,12 +13,22 @@ $ mvn clean
 # window and execute the following command:
 $ mvn clean install package
 
-$ cd image-service #Enters image service directory
-$ docker build -t image-service:latest . # builds image
-$ cd ../metadata-service # Enters metadata service directory
-$ docker build -t metadata-service:latest . # builds image
+$ cd gateway-server #Enters gateway service directory
+$ docker build -t gatewayapi:latest . # builds image
 $ cd ../configserver # Enters configserver directory
 $ docker build -t configserver:latest . # builds image
+$ cd ../user-service #Enters user service directory
+$ docker build -t user-services:latest . # builds image
+$ cd ../payment-service #Enters payment service directory
+$ docker build -t payment-service:latest . # builds image
+$ cd ../transaction-service #Enters transaction service directory
+$ docker build -t transaction-service:latest . # builds image
+$ cd ../image-service #Enters image service directory
+$ docker build -t image-service:latest . # builds image
+$ cd ../container-service #Enters container service directory
+$ docker build -t container-service:latest . # builds image
+$ cd ../volume-service #Enters volume service directory
+$ docker build -t volume-service:latest . # builds image
 $ cd ..  #returns to base directory
 
 # Now we are going to use docker-compose to start the actual image.  To start the docker image, stay in the directory containing  your source code (same level as this document) and  Run the following command: 
