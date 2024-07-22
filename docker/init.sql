@@ -2,8 +2,8 @@
 CREATE TYPE CCType AS ENUM ('VISA', 'MASTERCARD', 'AMERICAN EXPRESS');
 CREATE TYPE TransactionType AS ENUM ('PURCHASE', 'REFUND', 'REJECTED');
 
--- User table
-CREATE TABLE "User" (
+-- Client table
+CREATE TABLE Client (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255),
     username VARCHAR(255) UNIQUE,
@@ -21,7 +21,7 @@ CREATE TABLE Payment (
     CCNumber VARCHAR(19), -- Changed to VARCHAR to handle large numbers
     expires DATE,
     CCType CCType,
-    user_id INTEGER REFERENCES "User"(id)
+    client_id INTEGER REFERENCES Client(id)
 );
 
 -- Transactions table
@@ -32,7 +32,7 @@ CREATE TABLE Transactions (
     type TransactionType,
     amount INTEGER,
     approved BOOLEAN,
-    user_id INTEGER REFERENCES "User"(id)
+    client_id INTEGER REFERENCES Client(id)
 );
 
 -- Image table
@@ -43,7 +43,7 @@ CREATE TABLE Image (
     status VARCHAR(255),
     created DATE,
     size INTEGER,
-    user_id INTEGER REFERENCES "User"(id)
+    client_id INTEGER REFERENCES Client(id)
 );
 
 -- Volume table
@@ -64,5 +64,5 @@ CREATE TABLE Container (
     status VARCHAR(255),
     ports VARCHAR(255),
     last_started DATE,
-    user_id INTEGER REFERENCES "User"(id)
+    client_id INTEGER REFERENCES Client(id)
 );
